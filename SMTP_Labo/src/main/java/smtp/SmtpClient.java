@@ -1,86 +1,130 @@
 package smtp;
 
 import model.mail.Message;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 import java.net.Socket;
 
-/**
- *
- * @Auteurs Jesus Christ
- */
-
-public class SmtpClient implements ISmtpClient {
+public class SmtpClient {
 
     private static final Logger LOG = Logger.getLogger(SmtpClient.class.getName());
 
-    private String smtpAddress;//wesh
-    private int smtpPort = 420;
+    private final String smtpAddress;
+    private final int smtpServerPort;
 
-
-    private Socket socket;
-    private PrintWriter writer;
-    private BufferedReader reader;
-
-    public SmtpClient(String smtpAddress, int port) {
-        this.smtpPort = port;
-        this.smtpAddress = smtpAddress;
+    public SmtpClient(String address, int port) {
+        this.smtpAddress = address;
+        this.smtpServerPort = port;
     }
 
-    @Override
+    /**
+     * Send a message with SMTP
+     * @param message : message to send
+     */
     public void sendMessage(Message message) throws IOException {
+        Socket socket = new Socket(smtpAddress, smtpServerPort);
+        PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 
-        Socket socket = new Socket(smtpAddress, smtpPort);
-        writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
-        reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
-
+        // Starting session
         String line = reader.readLine();
         LOG.info(line);
-        writer.printf("EHLO localhost\n");
+        writer.printf("EHLO localhost\r\n");
+        line = reader.readLine();
         LOG.info(line);
-
-        for (int i = 0; i <= 6; i++) {
+        while (!line.startsWith("250 ")) {
+            if (!line.startsWith("250")) {
+                throw new IOException("SMTP error");
+            }
             line = reader.readLine();
-            LOG.info(line);
-            if (!(line.startsWith("250-"))) {
-                throw new IOException("error");
+        }
+        
+        // Sender
+        writer.write("MAIL FROM:<");
+        writer.write(message.getFrom());
+        writer.write(">\r\n");
+        writer.flush();
+        line = reader.readLine();
+        LOG.info(line);
+        if (!line.startsWith("250")) {
+            throw new IOException("SMTP error from sender");
+        }
+        
+        // Recipient
+        for (String to: message.getTo()) {
+            commandRecipient(writer, reader, to);
+        }
+        for (String cc : message.getCc()) {
+            commandRecipient(writer, reader, cc);
+        }
+
+        // Starting transmission
+        writer.write("DATA\r\n");
+        writer.flush();
+        line = reader.readLine();
+        LOG.info(line);
+        if (!line.startsWith("354")) {
+            throw new IOException("SMTP error from recipient");
+        }
+        // from
+        writer.write("From: " + message.getFrom() + "\r\n");
+        // to
+        writer.write("To: ");
+        headerRecipients(writer, message.getTo());
+        // cc
+        writer.write("Cc: ");
+        headerRecipients(writer, message.getCc());
+        // data
+        writer.write(message.getData());
+        writer.write("\r\n");
+        writer.write(".\r\n");
+        writer.flush();
+        line = reader.readLine();
+        LOG.info(line);
+        if (!line.startsWith("250")) {
+            throw new IOException("SMTP error transmitting message");
+        }
+        LOG.info("MESSAGE SEND");
+
+        // Closing session
+        writer.write("QUIT\r\n");
+        writer.flush();
+        socket.close();
+    }
+
+    /**
+     * Settle the recipient (to or cc) of the message with the RCPT command
+     * @param writer : writer
+     * @param reader : reader
+     * @param rec : recipient
+     */
+    public void commandRecipient(PrintWriter writer, BufferedReader reader, String rec) throws IOException {
+        writer.write("RCPT TO:<");
+        writer.write(rec);
+        writer.write(">\r\n");
+        writer.flush();
+        String line = reader.readLine();
+        LOG.info(line);
+        if (!line.startsWith("250")) {
+            throw new IOException("SMTP error recipient");
+        }
+    }
+
+    /**
+     * Settle the recipient (to or cc) of the message in the message header
+     * @param writer : writer
+     * @param rec : recipient
+     */
+    public void headerRecipients(PrintWriter writer, String[] rec) {
+        for (int i = 0; i < rec.length; i++) {
+            writer.write(rec[i]);
+            if (i < rec.length - 1) {
+                writer.write(",");
             }
         }
-
-        if (!(line.startsWith("250 "))) {
-            throw new IOException("error");
-        }
-
-        LOG.info(line);
-
-       writer.write("MAIL FROM: " + message.getFrom() + "\n");
-       writer.flush();
-       line = reader.readLine();
-       LOG.info(line);
-
-       writer.write("RCPT TO: " + message.getTo() + "\n");
-       writer.flush();
-       line = reader.readLine();
-       LOG.info(line);
-
-       for (String s : message.getCc()) {
-           writer.write("RCPT TO: " + s + "\n");
-           writer.flush();
-       }
-
-       writer.write("DATA" + "\n");
-       writer.flush();
-       writer.write(message.getMessage()); //non il faudra write from sender + to victims avant d'envoyer le message
-       writer.flush();
-
-
-
-
-
-
-
+        writer.write("\r\n");
+        writer.flush();
     }
 
 }

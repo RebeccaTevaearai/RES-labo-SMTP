@@ -8,6 +8,10 @@ public class Person {
         this.email = email;
     }
 
+    /**
+     * Getter email
+     * @return : email
+     */
     public String getEmail() {
         return email;
     }

@@ -1,46 +1,32 @@
 package model.prank;
 
+import model.mail.Message;
 import model.mail.Person;
-
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Prank {
 
-    private Person sender;
-    private final List<Person> victims = new ArrayList<>();
-    private final List<Person> witnesses = new ArrayList<>();
-    private String message;
+    private final Person sender;
+    private final List<Person> victims;
+    private final List<Person> witnesses;
+    private final String message;
 
-    public Person getSender() {
-        return sender;
-    }
-
-    public void setSender(Person sender) {
+    public Prank(Person sender, List<Person> victims, List<Person> witnesses, String message) {
         this.sender = sender;
-    }
-
-    public List<Person> getVictims() {
-        return victims;
-    }
-
-    public void addVictims(List<Person> victims) {
-        this.victims.addAll(victims);
-    }
-
-    public List<Person> getWitnesses() {
-        return witnesses;
-    }
-
-    public void addWitnesses(List<Person> witnesses) {
-        this.witnesses.addAll(witnesses);
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
+        this.victims = victims;
+        this.witnesses = witnesses;
         this.message = message;
+    }
+
+    /**
+     * Generate a message to send
+     * @return : Message
+     */
+    public Message generateMessage() {
+        return new Message(sender.getEmail(),
+                victims.stream().map(Person::getEmail).collect(Collectors.toList()).toArray(new String[]{}),
+                witnesses.stream().map(Person::getEmail).collect(Collectors.toList()).toArray(new String[]{}),
+                this.message);
     }
 }

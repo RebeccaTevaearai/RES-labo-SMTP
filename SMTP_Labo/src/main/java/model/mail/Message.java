@@ -2,41 +2,48 @@ package model.mail;
 
 public class Message {
 
-    private String from;
-    private String[] to = new String[0];
-    private String[] cc = new String[0];
-    private String data;
+    private final String from;
+    private final String[] to;
+    private final String[] cc;
+    private final String data;
 
+    public Message(String from, String[] to, String[] cc, String data) {
+        this.from = from;
+        this.to = to;
+        this.cc = cc;
+        this.data = data;
+    }
+
+    /**
+     * Getter from
+     * @return : message sender
+     */
     public String getFrom() {
         return from;
     }
 
-    public void setFrom() {
-        this.from = from;
-    }
-
+    /**
+     * Getter to
+     * @return : message recipient(s)
+     */
     public String[] getTo() {
         return to;
     }
 
-    public void setTo(String[] to) {
-        this.to = to;
-    }
-
+    /**
+     * Getter cc
+     * @return : message recipient(s) to cc
+     */
     public String[] getCc() {
         return cc;
     }
 
-    public void setCc(String[] cc) {
-        this.cc = cc;
-    }
-
-    public String getMessage() {
+    /**
+     * Get data
+     * @return : message corps
+     */
+    public String getData() {
         return data;
-    }
-
-    public void setMessage(String subject) {
-        this.data = subject;
     }
 
 }

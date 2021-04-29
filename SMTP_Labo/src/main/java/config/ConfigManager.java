@@ -16,48 +16,92 @@ public class ConfigManager {
     private final List<String> messages = new ArrayList<>();
     private final List<Person> victims = new ArrayList<>();
 
-    public ConfigManager() throws IOException {
-        loadProperties();
+    public ConfigManager() {
+        loadProperties("./config/config.properties");
         loadVictimsFile("./config/victims.utf8");
         loadMessagesFile("./config/messages.utf8");
     }
 
-    public void loadProperties() {
-        try (InputStream input = new FileInputStream("./config/config.properties")) {
+    /**
+     * Load and set properties defined in .config/config.properties
+     * @param propertiesPath : path to config.properties file
+     */
+    public void loadProperties(String propertiesPath) throws RuntimeException {
+        FileInputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(propertiesPath);
             Properties prop = new Properties();
-            // load a properties file
-            prop.load(input);
-            // set properties
+            prop.load(inputStream);
+
+            // server address
             smtpServerAddress = prop.getProperty("smtpServerAddress");
-            smtpServerPort = Integer.parseInt(prop.getProperty("smtpServerPort"));
-            numberOfGroups = Integer.parseInt(prop.getProperty("numberOfGroups"));
+            if (smtpServerAddress.isEmpty()) {
+                throw new RuntimeException("Smtp server address must be provided. Please configure the config.properties file");
+            }
+            // server port
+            try {
+                smtpServerPort = Integer.parseInt(prop.getProperty("smtpServerPort"));
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("Smtp server port must be provided and be a number. Please configure the config.properties file");
+            }
+            // number of groups
+            try {
+                numberOfGroups = Integer.parseInt(prop.getProperty("numberOfGroups"));
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("Number of groups must be provided and be a number. Please configure the config.properties file");
+            }
+            if (numberOfGroups < 3) {
+                throw new RuntimeException("Number of groups must be at least 3");
+            }
+            // witnesses (can be empty)
             String[] witnesses = prop.getProperty("witnessesToCC").split(",");
             witnessesToCC = new ArrayList<>();
             for (String witness : witnesses) {
                 witnessesToCC.add(new Person(witness));
             }
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public void loadVictimsFile(String filename) throws IOException {
-        try (BufferedReader bReader = new BufferedReader(
-                                      new InputStreamReader(
-                                      new FileInputStream(filename), StandardCharsets.UTF_8))) {
+    /**
+     * Load and set victims defined in ./config/victims.utf8
+     * @param victimsPath : path to victims.utf8 file
+     */
+    public void loadVictimsFile(String victimsPath) {
+        BufferedReader bReader = null;
+        try {
+            bReader = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(victimsPath), StandardCharsets.UTF_8));
             String line = bReader.readLine();
             while (line != null) {
                 victims.add(new Person(line));
                 line = bReader.readLine();
             }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bReader != null) {
+                    bReader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void loadMessagesFile(String filename) throws IOException {
-        try (BufferedReader bReader = new BufferedReader(
-                                      new InputStreamReader(
-                                      new FileInputStream(filename), StandardCharsets.UTF_8))) {
+    /**
+     * Load and set messages defined in ./config/messages.utf8
+     * @param messagesPath : path to messages.utf8 file
+     */
+    public void loadMessagesFile(String messagesPath) {
+        BufferedReader bReader = null;
+        try {
+            bReader = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(messagesPath), StandardCharsets.UTF_8));
             String line = bReader.readLine();
             StringBuilder message = new StringBuilder();
             while (line != null) {
@@ -69,32 +113,65 @@ public class ConfigManager {
                 }
                 line = bReader.readLine();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bReader != null) {
+                    bReader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
+    /**
+     * Getter Smtp Server Address
+     * @return : server address
+     */
     public String getSmtpServerAddress() {
         return smtpServerAddress;
     }
 
+    /**
+     * Getter Smtp Server port
+     * @return : server port
+     */
     public int getSmtpServerPort() {
         return smtpServerPort;
     }
 
+    /**
+     * Getter number of groups
+     * @return : number of groups
+     */
     public int getNumberOfGroups() {
         return numberOfGroups;
     }
 
+    /**
+     * Getter victims
+     * @return : list of victims
+     */
     public List<Person> getVictims() {
         return new ArrayList<>(victims);
     }
 
+    /**
+     * Getter witnesses
+     * @return : list of witnesses
+     */
     public List<Person> getWitnessesToCC() {
         return new ArrayList<>(witnessesToCC);
     }
 
+    /**
+     * Getter messages
+     * @return : list of prank messages
+     */
     public List<String> getMessages() {
-        return messages;
+        return new ArrayList<>(messages);
     }
-
 
 }
