@@ -99,7 +99,7 @@ public class SmtpClient {
      * @param reader : reader
      * @param rec : recipient
      */
-    public void commandRecipient(PrintWriter writer, BufferedReader reader, String rec) throws IOException {
+    private void commandRecipient(PrintWriter writer, BufferedReader reader, String rec) throws IOException {
         writer.write("RCPT TO:<");
         writer.write(rec);
         writer.write(">\r\n");
@@ -116,7 +116,7 @@ public class SmtpClient {
      * @param writer : writer
      * @param rec : recipient
      */
-    public void headerRecipients(PrintWriter writer, String[] rec) {
+    private void headerRecipients(PrintWriter writer, String[] rec) {
         for (int i = 0; i < rec.length; i++) {
             writer.write(rec[i]);
             if (i < rec.length - 1) {

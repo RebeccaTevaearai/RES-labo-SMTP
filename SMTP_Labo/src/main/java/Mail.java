@@ -7,7 +7,7 @@ import static java.lang.System.exit;
 
 public class Mail {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         ConfigManager configManager = null;
         try {
            configManager = new ConfigManager();

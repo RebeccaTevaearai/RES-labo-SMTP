@@ -26,8 +26,8 @@ public class ConfigManager {
      * Load and set properties defined in .config/config.properties
      * @param propertiesPath : path to config.properties file
      */
-    public void loadProperties(String propertiesPath) throws RuntimeException {
-        FileInputStream inputStream = null;
+    private void loadProperties(String propertiesPath) throws RuntimeException {
+        FileInputStream inputStream;
         try {
             inputStream = new FileInputStream(propertiesPath);
             Properties prop = new Properties();
@@ -69,7 +69,7 @@ public class ConfigManager {
      * Load and set victims defined in ./config/victims.utf8
      * @param victimsPath : path to victims.utf8 file
      */
-    public void loadVictimsFile(String victimsPath) {
+    private void loadVictimsFile(String victimsPath) {
         BufferedReader bReader = null;
         try {
             bReader = new BufferedReader(new InputStreamReader(
@@ -97,7 +97,7 @@ public class ConfigManager {
      * Load and set messages defined in ./config/messages.utf8
      * @param messagesPath : path to messages.utf8 file
      */
-    public void loadMessagesFile(String messagesPath) {
+    private void loadMessagesFile(String messagesPath) {
         BufferedReader bReader = null;
         try {
             bReader = new BufferedReader(new InputStreamReader(

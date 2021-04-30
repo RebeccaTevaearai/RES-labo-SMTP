@@ -51,7 +51,7 @@ public class PrankGenerator {
      * @param nbGroups : number of groups
      * @return list of groups
      */
-    public List<Group> generateGroups(List<Person> victims, int nbGroups) {
+    private List<Group> generateGroups(List<Person> victims, int nbGroups) {
         List<Person> availableVictims = new ArrayList<>(victims);
         Collections.shuffle(availableVictims);
         List<Group> groups = new ArrayList<>();
