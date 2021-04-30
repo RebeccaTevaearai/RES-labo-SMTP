@@ -1,27 +1,52 @@
 # RES-labo-SMTP
 
+### Description du projet 
+
+Cett
+
+### Instructions pour mettre en place le serveur Mock SMTP
+
+Mise en place du serveur Mock: 
+
+- cloner le projet https://github.com/tweakers/MockMock
+
+- modifier le `pom.xml`: 
+  
+  -  modifier la ligne:
+  
+  ```xml
+   <groupId>org.dstovall</groupId> par <groupId>com.jolira</groupId>
+  ```
+  
+  -  supprimer les lignes:
+
+```xml
+ <pluginRepositories>
+        <pluginRepository>
+            <id>onejar-maven-plugin.googlecode.com</id>
+            <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+        </pluginRepository>
+</pluginRepositories>
+```
+
+- dans le dossier MockMock: `mvn clean install`
+- dans le dossier target: `java -jar MockMock-1.4.0.one-jar.jar -p 2525`
+- vérification sur le navigateur web: `localhost:8282`
 
 
-Develop a client application that automatically plays pranks on a list of vitims
 
-1. The user should be able to define a list of victims (concretely, you should be able to create a file containing a list of e-mail addresses).
-2. The user should be able to define how many groups of victims should be formed in a given campaign. In every group of victims, there should be 1 sender ans at least 2 recipients (the minimum size for a group is 3).
-3. The user should be able to define a list of e-mail messages. When a prank is played on a group of victims, then one of these messages should be selected. The mail should be send to all group recipients , from teh address of the group sender. In other words, the recipient victims should be lead to believe that the sender victim has sent them.
+#### TO DO DOCKER
 
 
 
-Program must be configurable must be managed in a config file.
+### Instructions pour la configuration
 
 
 
-Rapport
-
-### Description
-
-### Instructions for setting up a mock SMTP server
-
-### Instructions for configuration
-
-### Description of the implementation
+### Description de l'implémentation
 
  
+
+
+
+
