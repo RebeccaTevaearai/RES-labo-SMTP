@@ -84,7 +84,7 @@ Cette application client permet d'envoyer des blagues par mails à des victimes 
 
   Puis le message
 
-  Puis le séparateur *******
+  Puis le séparateur ***
 
   
 
