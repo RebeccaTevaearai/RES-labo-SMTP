@@ -47,7 +47,7 @@ Cette application client permet d'envoyer des blagues par mails à des victimes 
 
 - cloner le repository si ce n'est pas déjà fait
 
-- modifier à sa guise le **dossier config**:
+- modifier à sa guise le **dossier config du dossier SMTP_Labo**:
 
   - **config.properties** où la configutation doit être définie comme tel:
 
