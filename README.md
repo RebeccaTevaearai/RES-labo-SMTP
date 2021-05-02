@@ -11,13 +11,13 @@ Cette application client permet d'envoyer des blagues par mails à des victimes 
 - cloner le repository https://github.com/tweakers/MockMock
 
 - modifier le `pom.xml`: 
-  
+
   -  modifier la ligne:
-  
+
   ```xml
    <groupId>org.dstovall</groupId> par <groupId>com.jolira</groupId>
   ```
-  
+
   -  supprimer les lignes:
 
 ```xml
@@ -48,6 +48,7 @@ Cette application client permet d'envoyer des blagues par mails à des victimes 
 - cloner le repository si ce n'est pas déjà fait
 
 - modifier à sa guise le **dossier config**:
+
   - **config.properties** où la configutation doit être définie comme tel:
 
   ```properties
@@ -68,7 +69,7 @@ Cette application client permet d'envoyer des blagues par mails à des victimes 
   
 
   - **messages.utf8** où la liste de blagues doit être définie comme tel: 
-  
+
   ```
   Subject: Confession
   
@@ -76,28 +77,28 @@ Cette application client permet d'envoyer des blagues par mails à des victimes 
   I hate you all
   
   ***
-Subject: ...
+  Subject: ...
   ```
 
   La première ligne contient le Subject: titre du sujet
 
   Puis le message
-  
+
   Puis le séparateur *** 
+
   
-  
-  
-- **victims.utf8** où la liste des victimes doit être définie comme tel:
-  
-```
+
+  - **victims.utf8** où la liste des victimes doit être définie comme tel:
+
+  ```
   alec.berney@heig-vd.ch
   david.gonzalezleon@heig-vd.ch
   quentin.forestier@heig-vd.ch
   ...
   ```
-  
+
   La liste des victimes correspond à **une liste d'adresses emails séparées par un retour à la ligne** . 
-  
+
 - lancer le programme
 
 ### Description de l'implémentation
