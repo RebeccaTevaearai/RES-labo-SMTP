@@ -80,11 +80,11 @@ Cette application client permet d'envoyer des blagues par mails à des victimes 
   Subject: ...
   ```
 
-  La première ligne contient le Subject: titre du sujet
+  La première ligne contient le sujet **Subject: titre du sujet**
 
   Puis le message
 
-  Puis le séparateur *** 
+  Puis le séparateur *******
 
   
 
